@@ -15,10 +15,10 @@ local Rng = require(Shared.Rng)
 local Bots = {}
 
 Bots.Levels = {
-	idle = { think = 1, err = 0, jitter = 0, idle = true },
-	random = { think = 0.7, err = 0, jitter = 0.2, random = true },
-	novice = { think = 0.7, err = 0.22, jitter = 0.4 },
-	medium = { think = 0.3, err = 0.07, jitter = 0.12 },
+	idle = { think = 1, err = 0, jitter = 0, lookErr = 0, idle = true },
+	random = { think = 0.7, err = 0, jitter = 0.2, lookErr = 0.08, random = true },
+	novice = { think = 0.7, err = 0.22, jitter = 0.4, lookErr = 0.11 },
+	medium = { think = 0.3, err = 0.07, jitter = 0.12, lookErr = 0.04 },
 }
 Bots.Order = { "idle", "random", "novice", "medium" }
 
@@ -54,6 +54,7 @@ function Bots.mem(level: string, seed: number)
 		think = L.think,
 		err = L.err,
 		jitter = L.jitter,
+		lookErr = L.lookErr,
 		random = L.random == true,
 		idle = L.idle == true,
 		rng = Rng.new(seed),

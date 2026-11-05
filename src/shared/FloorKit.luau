@@ -310,6 +310,31 @@ function Kit.go(x: number, z: number, speed: number?, extra: { [string]: any }?)
 	return it
 end
 
+-- Дальность прыжка (по горизонтали) на опору выше на dh при гравитации g; nil — не допрыгнуть
+function Kit.reach(dh: number, g: number): number?
+	local v = Config.Body.Jump
+	local disc = v * v - 2 * g * dh
+	if disc < 0 then
+		return nil
+	end
+	local tLand = (v + math.sqrt(disc)) / g
+	return Config.Body.Walk * tLand
+end
+
+-- Зазор от края своей опоры cur (или от точки me, если опоры нет) до края цели s
+function Kit.gap(cur, me, s): number
+	local rs = if s.shape == "Disc" or s.shape == "Ball" then s.sx / 2 else math.min(s.sx, s.sz) / 2
+	if not cur then
+		return math.sqrt((s.x - me.x) ^ 2 + (s.z - me.z) ^ 2) - rs
+	end
+	if cur.shape == "Disc" or cur.shape == "Ball" then
+		return math.sqrt((s.x - cur.x) ^ 2 + (s.z - cur.z) ^ 2) - rs - cur.sx / 2
+	end
+	local qx = math.clamp(s.x, cur.x - cur.sx / 2, cur.x + cur.sx / 2)
+	local qz = math.clamp(s.z, cur.z - cur.sz / 2, cur.z + cur.sz / 2)
+	return math.sqrt((s.x - qx) ^ 2 + (s.z - qz) ^ 2) - rs
+end
+
 -- Случайная точка в прямоугольнике
 function Kit.randomPoint(rng, x0: number, x1: number, z0: number, z1: number)
 	return rng:range(x0, x1), rng:range(z0, z1)

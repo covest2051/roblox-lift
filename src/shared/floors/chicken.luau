@@ -10,6 +10,7 @@ local def = {
 	icon = "🐔",
 	duration = 30,
 	minPlayers = 1,
+	stub = true,
 	rare = 0.05,
 }
 

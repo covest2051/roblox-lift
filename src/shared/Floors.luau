@@ -222,6 +222,7 @@ function Floors.botStep(inst, p, mem, dt: number)
 		local it = inst.def.bot(Floors.view(inst, p), mem) or {}
 		mem.intent = it
 		mem.aim = (mem.rng:next() * 2 - 1) * (mem.jitter or 0)
+		mem.look = 0.12 + (mem.rng:next() * 2 - 1) * (mem.lookErr or 0)
 		if it.act then
 			Floors.input(inst, p.id, it.act)
 			it.act = nil
@@ -247,10 +248,21 @@ function Floors.botStep(inst, p, mem, dt: number)
 		local c, s = math.cos(mem.aim), math.sin(mem.aim)
 		mx, mz = mx * c - mz * s, mx * s + mz * c
 	end
+	local jump = it.jump
+	if it.edgeJump and p.grounded and not jump and (mx ~= 0 or mz ~= 0) then
+		-- прыжок у края: впереди нет опоры на этой высоте
+		local la = mem.look or 0.12
+		local lx = p.x + mx * Config.Body.Walk * la
+		local lz = p.z + mz * Config.Body.Walk * la
+		local top = Kit.groundAt(inst, lx, lz, p.y + 0.5)
+		if not top or top < p.y - 1.5 then
+			jump = true
+		end
+	end
 	if inst.mirror and mem.mirrorFix then
 		mx = -mx
 	end
-	Body.step(p, { mx = mx, mz = mz, jump = it.jump }, dt, inst)
+	Body.step(p, { mx = mx, mz = mz, jump = jump }, dt, inst)
 	if it.jumpOnce and not p.grounded then
 		it.jump, it.jumpOnce = nil, nil
 	end

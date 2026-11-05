@@ -10,6 +10,7 @@ local def = {
 	icon = "🤖",
 	duration = 30,
 	minPlayers = 1,
+	stub = true,
 }
 
 function def.build(inst)
