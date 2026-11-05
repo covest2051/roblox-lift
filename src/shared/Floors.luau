@@ -214,6 +214,7 @@ function Floors.botStep(inst, p, mem, dt: number)
 	if p.out or mem.idle then
 		if not p.out then
 			Body.step(p, {}, dt, inst)
+			p.spd = 0
 		end
 		return
 	end
@@ -263,6 +264,7 @@ function Floors.botStep(inst, p, mem, dt: number)
 		mx = -mx
 	end
 	Body.step(p, { mx = mx, mz = mz, jump = jump }, dt, inst)
+	p.spd = math.sqrt(p.vx * p.vx + p.vz * p.vz)
 	if it.jumpOnce and not p.grounded then
 		it.jump, it.jumpOnce = nil, nil
 	end

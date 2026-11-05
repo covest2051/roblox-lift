@@ -66,8 +66,9 @@ function Body.step(p, it, dt: number, inst)
 			p.z, p.vz = b[4], 0
 		end
 	end
+	-- точно для постоянной гравитации (иначе при шаге 0.1 с прыжок ниже на треть)
+	p.y += p.vy * dt - 0.5 * g * dt * dt
 	p.vy -= g * dt
-	p.y += p.vy * dt
 	local top, s = Kit.groundAt(inst, p.x, p.z, math.max(py, p.y) + B.StepUp)
 	if top and p.y <= top and p.vy <= 0 then
 		p.y = top
