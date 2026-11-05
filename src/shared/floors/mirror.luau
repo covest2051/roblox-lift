@@ -12,6 +12,7 @@ local def = {
 	icon = "🪞",
 	duration = 45,
 	minPlayers = 1,
+	freeze = true,
 	respawn = true,
 }
 

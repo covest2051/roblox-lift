@@ -4,7 +4,8 @@
 
 	  id, cat ("fire"|"race"|"brain"|"coop"|"calm"|"boss"|"secret"), icon, duration (с),
 	  minPlayers, rare (шанс сюрприз-остановки, только редкие), ranked (false — без топ-3),
-	  respawn (гонка: упал — на чекпоинт, не выбыл),
+	  respawn (гонка: упал — на чекпоинт, не выбыл), freeze (первые 3 с все стоят — «на старт»),
+	  speedMul (inst.speedMul — множитель скорости ходьбы на этаже, сервер ставит WalkSpeed),
 	  build(inst)          — детали из примитивов (Kit.part/solid), inst.bounds, точки появления;
 	                         случайность — только inst.rng, игроки — inst.list;
 	  start(inst)?         — после build;
@@ -143,6 +144,9 @@ function Floors.new(id: string, opts)
 		table.insert(inst.list, p)
 		inst.byId[r.id] = p
 	end
+	if def.freeze then
+		inst.freeze = Config.Floor.Grace -- гонки: «на старт» — все стоят первые 3 с
+	end
 	def.build(inst)
 	for _, p in inst.list do
 		if not p.spawn then
@@ -231,6 +235,10 @@ function Floors.botStep(inst, p, mem, dt: number)
 	end
 	local it = mem.intent
 	local mx, mz = it.mx or 0, it.mz or 0
+	if it.track then
+		-- цель, которая уточняется каждый шаг (следующий пузырь, убегающий пингвин)
+		it.tx, it.tz = it.track(p)
+	end
 	if it.tx then
 		local dx, dz = it.tx - p.x, it.tz - p.z
 		local d = math.sqrt(dx * dx + dz * dz)
@@ -250,6 +258,9 @@ function Floors.botStep(inst, p, mem, dt: number)
 		mx, mz = mx * c - mz * s, mx * s + mz * c
 	end
 	local jump = it.jump
+	if it.jumpNear and p.grounded and it.tx and (p.x - it.tx) ^ 2 + (p.z - it.tz) ^ 2 < it.jumpNear ^ 2 then
+		jump = true
+	end
 	if it.edgeJump and p.grounded and not jump and (mx ~= 0 or mz ~= 0) then
 		-- прыжок у края: впереди нет опоры на этой высоте
 		local la = mem.look or 0.12

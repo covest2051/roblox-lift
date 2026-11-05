@@ -31,6 +31,9 @@ function Body.step(p, it, dt: number, inst)
 		mx, mz = -mx, mz
 	end
 	local sp = B.Walk * (inst.speedMul or 1)
+	if inst.freeze and inst.t < inst.freeze then
+		sp = 0 -- «на старт»: первые секунды стоим
+	end
 	local wx, wz = mx * sp, mz * sp
 	local on = p.on
 	if p.grounded and on and on.ice then
@@ -44,7 +47,7 @@ function Body.step(p, it, dt: number, inst)
 	else
 		p.vx, p.vz = wx, wz
 	end
-	if it.jump and p.grounded then
+	if it.jump and p.grounded and sp > 0 then
 		p.vy = B.Jump
 		p.grounded = false
 		p.slide = on ~= nil and on.ice == true
@@ -74,6 +77,7 @@ function Body.step(p, it, dt: number, inst)
 		p.y = top
 		if s.bounce then
 			p.vy = s.bounce
+			p.lastBounce = s
 			p.grounded, p.on = false, nil
 			p.slide = false
 			return s
