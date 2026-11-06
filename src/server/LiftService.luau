@@ -277,9 +277,19 @@ local function handle(e)
 	if t == "phase" then
 		stateDirty = true
 		updateCabin()
-		if e.phase == "cabin" or e.phase == "lobby" or e.phase == "idle" then
+		if
+			e.phase == "cabin"
+			or e.phase == "lobby"
+			or e.phase == "idle"
+			or e.phase == "roof"
+			or e.phase == "fall"
+		then
 			Workspace.Gravity = Config.Body.Gravity
 			lastGravity = Config.Body.Gravity
+			-- в кабине — обычный свет, обычное управление
+			Workspace:SetAttribute("FloorDark", false)
+			Workspace:SetAttribute("FloorMirror", false)
+			Workspace:SetAttribute("FloorFlipped", false)
 		end
 	elseif t == "tp" then
 		stateDirty = true
