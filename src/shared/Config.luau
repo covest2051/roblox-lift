@@ -114,6 +114,7 @@ Config.Products = {
 Config.ProductOrder =
 	{ "Coins500", "Coins3000", "Basement", "Chest", "DirectRare", "DirectEpic", "DirectLegendary" }
 Config.ChestFallbackCoins = 500
+Config.BasementFallbackCoins = 300 -- Подвал уже вызвал кто-то другой, пока шла оплата
 
 -- Бейджи (вписать ID из Creator Hub → Badges; 0 — не выдаются)
 Config.Badges = {

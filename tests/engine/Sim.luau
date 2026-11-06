@@ -427,6 +427,14 @@ roblox.implementMethod("Players", "GetPlayerByUserId", function(self, id)
 	end
 	return nil
 end)
+Sim.badges = {}
+roblox.implementMethod("BadgeService", "UserHasBadgeAsync", function(_, userId, id)
+	return Sim.badges[userId .. ":" .. id] == true
+end)
+roblox.implementMethod("BadgeService", "AwardBadge", function(_, userId, id)
+	Sim.badges[userId .. ":" .. id] = true
+	return true
+end)
 roblox.implementMethod("SocialService", "PromptGameInvite", function(_, player)
 	Sim.invites = (Sim.invites or 0) + 1
 end)
@@ -573,6 +581,7 @@ local function makeEnv(script)
 		ColorSequenceKeypoint = roblox.ColorSequenceKeypoint,
 		NumberRange = roblox.NumberRange,
 		Vector3int16 = roblox.Vector3int16,
+		PhysicalProperties = roblox.PhysicalProperties,
 		Enum = roblox.Enum,
 		RaycastParams = RaycastParamsMock,
 		TweenInfo = TweenInfoMock,
