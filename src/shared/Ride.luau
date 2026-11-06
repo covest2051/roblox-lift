@@ -410,11 +410,12 @@ function startFloor(ride)
 		if P then
 			tp(ride, P, "floor", p.x, p.y, p.z, { exit = true })
 			p.teleported = true
+			-- память головы — своя на каждом этаже
 			if P.mem then
-				P.mem.next = 0
+				P.mem = Bots.mem(P.mem.level, ride.rng:int(1, 2 ^ 30))
 			end
 			if P.auto then
-				P.auto.next = 0
+				P.auto = Bots.mem(P.auto.level, ride.rng:int(1, 2 ^ 30))
 			end
 		end
 	end

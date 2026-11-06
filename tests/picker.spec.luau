@@ -43,6 +43,7 @@ return function(t)
 			local d = Floors.get(id)
 			t.ok(Floors.CatIcon[d.cat] ~= nil, id .. " category")
 			t.ok(type(d.icon) == "string" and #d.icon > 0, id .. " icon")
+			t.ok(not d.stub, id .. " is implemented (not a placeholder)")
 		end
 	end)
 
